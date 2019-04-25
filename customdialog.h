@@ -22,6 +22,8 @@ public:
     CustomDialog(QWidget *parent = Q_NULLPTR);
 public slots:
     void save();
+protected:
+    void keyPressEvent(QKeyEvent *) override;
 private:
     QTreeWidget* widget;
     QDialogButtonBox* buttonBox;

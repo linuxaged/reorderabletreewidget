@@ -11,6 +11,7 @@ public:
     CustomTreeWidget(QWidget *parent = nullptr);
 protected:
     void dragEnterEvent(QDragEnterEvent *event);
+    void dragLeaveEvent(QDragLeaveEvent *event);
     void dropEvent(QDropEvent *event);
 private:
     QTreeWidgetItem* draggedItem;

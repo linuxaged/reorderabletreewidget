@@ -6,8 +6,17 @@ CustomTreeWidget::CustomTreeWidget(QWidget* parent):QTreeWidget(parent)
 
 void CustomTreeWidget::dragEnterEvent(QDragEnterEvent *event){
     qDebug() << "drag enter";
-    draggedItem = currentItem();
+//    draggedItem = currentItem();
+    {
+        auto treeWidget = qobject_cast<QTreeWidget*>(event->source());
+        draggedItem = treeWidget->currentItem();
+    }
     QTreeWidget::dragEnterEvent(event);
+}
+
+void CustomTreeWidget::dragLeaveEvent(QDragLeaveEvent *event)
+{
+    qDebug() << "drag leave" << currentItem();
 }
 
 void CustomTreeWidget::dropEvent(QDropEvent *event){
@@ -33,7 +42,12 @@ void CustomTreeWidget::dropEvent(QDropEvent *event){
                 dragParent->removeChild(draggedItem);
                 dragParent->insertChild(droppedIndex.row(), draggedItem);
             }
-
+        } else { //
+            auto treeWidget = draggedItem->treeWidget();
+            auto index = treeWidget->indexOfTopLevelItem(draggedItem);
+            auto take = treeWidget->takeTopLevelItem(index);
+            //
+            treeWidget->insertTopLevelItem(droppedIndex.column(), take);
         }
     } else {
         qDebug() << "drop NONE";

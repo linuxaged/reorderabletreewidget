@@ -1,4 +1,6 @@
 #include "customdialog.h"
+#include <QDebug>
+#include <QProcess>
 
 CustomDialog::CustomDialog(QWidget *parent): QDialog(parent)
 {
@@ -25,7 +27,7 @@ void CustomDialog::createTreeWidget(){
     treeMap.insert("Europe", QStringList() << "Heathrow Airport" << "Charles de Gaulle Airport"
                    << "Amsterdam Airport Schiphol" << "Frankfurt Airport"
                    << "Istanbul AtatĆ¼rk Airport" << "Adolfo Suarez Madridā€“Barajas Airport");
-
+    treeMap.insert("Jiangsu", QStringList() << "Nanjing" << "Wuxi" << "Changzhou" << "Xuzhou");
     QTreeWidgetItem *parentItem = Q_NULLPTR;
     QTreeWidgetItem *childItem = Q_NULLPTR;
 
@@ -33,6 +35,7 @@ void CustomDialog::createTreeWidget(){
     while (i.hasNext()) {
         i.next();
         parentItem = new QTreeWidgetItem(widget);
+        parentItem->type();
         parentItem->setText(0, i.key());
         foreach (const auto& str, i.value()) {
            childItem = new QTreeWidgetItem;
@@ -90,5 +93,14 @@ void CustomDialog::save(){
 
     QMessageBox::information(this, tr("Reorderable QTreeWidget"),
                                    tr("The data was saved."),
-                                   QMessageBox::Ok);
+                             QMessageBox::Ok);
+}
+
+void CustomDialog::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_F1) {
+        qDebug() << "a pressed!";
+        QProcess process(this);
+        process.startDetached("reorderabletreewidget.exe");
+    }
 }
