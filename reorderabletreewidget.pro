@@ -27,11 +27,13 @@ CONFIG += c++11
 SOURCES += \
         customdialog.cpp \
         main.cpp \
-        customtreewidget.cpp
+        customtreewidget.cpp \
+        thumbnailtreeitemdata.cpp
 
 HEADERS += \
         customdialog.h \
-        customtreewidget.h
+        customtreewidget.h \
+        thumbnailtreeitemdata.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

@@ -37,9 +37,11 @@ void CustomDialog::createTreeWidget(){
         parentItem = new QTreeWidgetItem(widget);
         parentItem->type();
         parentItem->setText(0, i.key());
+        parentItem->setData(0,0, QVariant(i.key()));
         foreach (const auto& str, i.value()) {
            childItem = new QTreeWidgetItem;
            childItem->setText(0, str);
+           childItem->setData(0,0, QVariant(str));
            parentItem->addChild(childItem);
         }
     }

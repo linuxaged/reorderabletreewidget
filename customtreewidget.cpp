@@ -1,22 +1,35 @@
 #include "customtreewidget.h"
+#include "thumbnailtreeitemdata.h"
 #include <QDebug>
+#include <QApplication>
+#include <QDrag>
+
 CustomTreeWidget::CustomTreeWidget(QWidget* parent):QTreeWidget(parent)
 {
 }
 
 void CustomTreeWidget::dragEnterEvent(QDragEnterEvent *event){
     qDebug() << "drag enter";
-//    draggedItem = currentItem();
-    {
-        auto treeWidget = qobject_cast<QTreeWidget*>(event->source());
-        draggedItem = treeWidget->currentItem();
-    }
     QTreeWidget::dragEnterEvent(event);
 }
 
 void CustomTreeWidget::dragLeaveEvent(QDragLeaveEvent *event)
 {
     qDebug() << "drag leave" << currentItem();
+
+    auto index = currentIndex();
+    QModelIndexList indices{index};
+    auto mime = model()->mimeData(indices);
+    Q_ASSERT(mime);
+    mime->setData("text/plain", "madi asd asdf ");
+    qDebug() << mime->text();
+    QTreeWidget::dragLeaveEvent(event);
+}
+
+void CustomTreeWidget::dragMoveEvent(QDragMoveEvent *event)
+{
+//    qDebug() << "drag move";
+    QTreeWidget::dragMoveEvent(event);
 }
 
 void CustomTreeWidget::dropEvent(QDropEvent *event){
@@ -24,6 +37,24 @@ void CustomTreeWidget::dropEvent(QDropEvent *event){
     if( !droppedIndex.isValid() ) {
         qDebug() << "drop index not valid";
         return;
+    }
+
+    // mime data
+    {
+        auto mime = event->mimeData();
+        qDebug() << "mime: " << mime->text();
+    }
+
+    auto sourceWidget = qobject_cast<CustomTreeWidget*>(event->source());
+    Q_ASSERT(event->source());
+    qDebug() << "event source class:" << event->source()->metaObject()->className();
+    Q_ASSERT(sourceWidget);
+    // 是不是外来的
+    QTreeWidgetItem *draggedItem;
+    if (sourceWidget == this) {
+        draggedItem = currentItem();
+    } else {
+        draggedItem = sourceWidget->currentItem();
     }
 
     if(draggedItem){
@@ -52,4 +83,6 @@ void CustomTreeWidget::dropEvent(QDropEvent *event){
     } else {
         qDebug() << "drop NONE";
     }
+
+    event->accept();
 }
